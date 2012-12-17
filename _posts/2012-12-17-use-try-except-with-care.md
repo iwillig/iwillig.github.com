@@ -1,9 +1,9 @@
 ---
 layout: post
 title: "Use try except with care"
-description: ""
-category: 
-tags: []
+description: "Poor use of try except can lead to hard to debug errors"
+category: python
+tags: ['python', 'coding-style', 'django']
 ---
 
 
