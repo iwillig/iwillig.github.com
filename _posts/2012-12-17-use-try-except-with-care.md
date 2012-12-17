@@ -18,13 +18,14 @@ or almost impossible to detect.
 As in most languages, python give us the ability to check for errors
 at runtime and address those errors. The syntax is as follows
 
+{% highlight python %}
     try
         # some block of code that could throw an error
     except Exception, e:
         # do something to address an error
     finally:
         # do no matter what
-
+{% endhighlight %}
 
 Also note that within the except statement, you can provide a class
 for the specific error you want to catch. In this case the except
@@ -36,6 +37,8 @@ errors.
 This is a more of an real world example and very close to the one I
 found today.
 
+
+{% highlight python %}
     def django_view_func(request):
         try:
             response = get_url(request.params.url)
@@ -45,6 +48,7 @@ found today.
                 body = e.message,
                 status_code = 500
             )
+{% endhighlight %}
 
 This code makes a request to GeoServer from within a try except block,
 either returning a response if everything is okay or throws a 500 if
@@ -60,7 +64,7 @@ However, this is a solvable issue as most http client libraries are
 nice enough to give specific class exceptions. In other words, can we
 write the above code as
 
-
+{% highlight python %}
     def django_view_func(request):
         try:
             response = get_url(request.params.url)
@@ -70,6 +74,7 @@ write the above code as
                 body = e.message,
                 status_code = 500
             )
+{% endhighlight %}
 
 And this is great, because its now easier to spot whats going on. If
 this except block is run, we know now that is has something to do with
@@ -83,10 +88,12 @@ will detect it and throw a 500 error anyway. Even less code.
 
 Even worse is a pattern that I sometimes see, 
 
+{% highlight python %}
     try:
         doSomething()
     except Exception, e:
         pass
+{% endhighlight %}
 
 This is evil right? We are catching an error and not even telling
 anyone that we are. An error could be thrown and how would we know?
