@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link href="components/bootstrap/css/bootstrap.min.css"
+        rel="stylesheet" media="screen">
+
+  <link href="components/codemirror/lib/codemirror.css"
+        rel="stylesheet" media="screen">
+ 
+  <link rel="stylesheet" href="components/codemirror/theme/twilight.css">
+
+  <link href="css/style.css"
+        rel="stylesheet" media="screen">
+
+
+</head>
+<body>
+
+  <div id="ol-map">
+
+    <div class="container-fluid">
+
+      <div id="header" class="navbar navbar-inverse
+                              navbar-fixed-top">
+
+        <div class="navbar-inner">
+          <div class="container">
+            <div class="row">
+
+              <a class="brand" href="#">Mapstory</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div id="map-info"></div>
+
+      <div id="show-side-bar"><a>Show Layers</a></div>
+
+      <div id="layer-tree-wrapper">
+
+        <div id="map-tool-bar">
+        </div>
+
+        <div id="layer-tree">
+          <a id="hide-side-bar">Hide Layers</a>
+          <h3>Current Layers</h3>
+          <ul id="local-layers"></ul>
+          <ul id="remote-layers"></ul>
+
+          <button id="add-layer" class="btn">Add Layer</button>
+          <hr/>
+          <div id="editor-wrapper">
+            <div class="row-fluid">
+              <div class="span2">
+                <button id="newStyle" class="btn">New Style</button>
+              </div>
+
+              <div class="span2" id="style-selector">
+              </div>
+
+            </div>
+
+            <div>
+              
+              <ul>
+                <li>Polygon</li>
+                <ul>
+                  <li>
+                    Fill 
+                    <input type="text" class="input-mini" >
+                    <input type="text" class="input-mini">
+                  </li>
+                  <li>
+                    Stroke 
+                    <input type="text" class="input-mini">
+                    <input type="text" class="input-mini">
+                    <input type="text" class="input-mini">
+                  </li>
+                </ul>
+                <li>Label</li>
+              </ul>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+
+  <script src="components/jquery/jquery.min.js"></script>
+  <script src="components/underscore/underscore-min.js"></script>
+  <script src="components/backbone/backbone-min.js"></script>
+  <script src="components/bootstrap/js/bootstrap.min.js"></script>
+  <script src="components/openlayers/OpenLayers.js"></script>
+
+
+  <script src="components/codemirror/lib/codemirror.js"></script>
+  <script src="components/codemirror/mode/yaml/yaml.js"></script>
+
+  <script id="add-layer-info" type="text/template">
+
+    <div class="modal-header">
+      <p>Manage Layers</p>
+    </div>
+
+    <div class="modal-body">
+
+      <form class="form-search">
+
+        <div class="input-prepend">
+          <button id="search" type="submit" class="btn">Search</button>
+          <input type="text" class="input-medium search-query">
+        </div>
+
+        <input type="text" name="limit" value="100"
+               class="input-mini">
+
+        <span class="help-inline">
+          Limit number of layers
+        </span>
+
+      </form>
+
+      <div>
+        <ul id="show-datasets">
+          <% _.each(datasets, function (dataset) { %>
+          <li class="dataset-element"
+              data-id="<%= dataset.id %>"
+              data-name="<%= dataset.name %>">
+            <a href="#"><%= dataset.name %></a>
+          </li>
+          <% }); %>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="modal-footer">
+     <a id="close" class="btn" href="#">Done</a>
+    </div>
+
+
+  </script>
+
+
+  <script id="mapInfoTemplate" type="text/template">
+    <div>
+      <button id="zoom-in" class="btn">+</button>
+      <button id="zoom-out" class="btn">-</button>
+      <button id="map-properties" class="btn">Edit Map</button>
+      <p>Map title: <%= title %></p>
+      <p>Zoom level: <%= zoom %></p>
+    </div>
+  </script>
+
+  <script id="edit-properties-template" type="text/template">
+
+    <div class="modal-body">
+
+      <form class="form-horizontal">
+
+        <div class="control-group">
+          <label class="control-label">Title</label>
+          <div class="controls">
+            <input type="text"
+                   name="title" 
+                   value="<%= title %>">
+          </div>
+        </div>
+
+
+        <div class="control-group">
+          <label class="control-label">About</label>
+          <div class="controls">
+            <textarea name="about"><%= about %></textarea>
+          </div>
+        </div>
+
+
+        <div class="control-group">
+          <label class="control-label">Projection</label>
+          <div class="controls">
+            <input type="text" 
+                   name="projection" 
+                   value="<%= projection %>">
+          </div>
+        </div>
+
+        <div class="control-group">
+          <label class="control-label">Background color</label>
+          <div class="controls">
+            <input type="color" 
+                   name="bgcolor"
+                   value="<%= bgcolor %>">
+          </div>
+        </div>
+
+
+      </form>
+
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn" id="save">Save map</button>
+      <button class="btn" id="close">Close</button>
+    </div>
+  </script>
+
+
+
+
+
+  <script id="layerEditTemplate" type="text/template">
+    <div class="modal-body">
+
+      <form class="form-horizontal">
+
+        <div class="control-group">
+          <label class="control-label">Layer name</label>
+          <div class="controls">
+            <input type="text" name="name" value="<%= layer.name %>" />
+          </div>
+        </div>
+
+        <div class="control-group">
+
+          <div class="control-label">
+            <label class="control-label">About layer</label>
+            <div class="controls">
+              <textarea name="about"><%= layer.about %></textarea>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="control-group">
+          <label class="control-label">Select layer's style</label>
+          <div class="controls">
+
+            <select name="style">
+              <% _.each(styles, function (style) { %>
+                  <% if (layer.style === style.name) { %>
+                  <option value="<%= style.name %>" selected><%= style.name %></option>
+                  <% } else { %>
+                  <option value="<%= style.name %>"><%= style.name %></option>
+                  <%} %>
+              <% }); %>
+            </select>
+
+          </div>
+        </div>
+
+      </form>
+    </div>
+    <div class="modal-footer">
+      <a href="#" id="update" class="btn">Save</a>
+      <a href="#" id="delete" class="btn btn-danger">Delete</a>
+      <a href="#" id="close" class="btn">Close</a>
+    </div>
+  </script>
+
+
+
+
+  <script id="layerTreeTemplate" type="text/template">
+    <div draggable="true"
+         ondragstart="event.dataTransfer.setData('text/plain', 'This text may be dragged')">
+      <input class="toggle-view-p" <%= visible ? 'checked' : '' %> type="checkbox" />
+      <a class="show-metadata" href="#"><%= name %></a>
+    </div>
+  </script>
+
+
+
+
+  <script id="styleSelectorTemplate" type="text/template">
+
+    <select>
+      <option>-----</option>
+    <% _.each(styles, function (style) { %>
+         <option data-name="<%= style.name %>"><%= style.name %></option>
+    <% }); %>
+    </select>
+
+  </script>
+
+  <script src="src/index.js"></script>
+
+</body>
+</html>

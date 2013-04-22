@@ -1,0 +1,55 @@
+
+
+#ol-map { 
+    background: #eee;
+}
+
+#show-side-bar {
+    padding: 5px;
+    position: absolute;
+    z-index: 10000;
+    top: 42px;
+    right: 0px;
+    background: yellow;
+}
+#layer-tree-wrapper {
+    z-index: 1000;
+    position:absolute;
+    padding: 5px;
+    right: 0px;
+    border-left: 1px solid #000;
+    background: #fff;
+}
+#layer-tree {
+    width: 600px;
+}
+#layer-tree ul {
+    margin: 0px 0px 0px 0px;
+}
+#layer-tree input { margin: 0px 0px 0px 0px; }
+
+#layer-tree li.layer-element { 
+    border-top: 1px solid #eee;
+    padding: 5px;
+    list-style: none;
+}
+#layer-tree li a {
+    margin-top: 10px;
+    padding-left: 10px;
+}
+#layer-tree li .metadata-form {
+    padding: 10px;
+}
+
+#editor-wrapper {
+
+}
+
+#map-info {
+    position: absolute;
+    padding: 5px;
+    z-index: 1000;
+    background: #fff;
+    left: 10px;
+    top: 80px;
+}

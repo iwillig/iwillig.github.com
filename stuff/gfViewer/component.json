@@ -1,0 +1,13 @@
+{
+    "name": "gfViewer",
+    "version": "0.0.1",
+    "dependencies": {
+        "jquery": "*",
+        "backbone": "*",
+        "underscore": "*",
+        "openlayers":"*",
+        "codemirror": "*",
+        "bootstrap": "http://twitter.github.com/bootstrap/assets/bootstrap.zip"
+    },
+    "devDependencies": {} 
+}
